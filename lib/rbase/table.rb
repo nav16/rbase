@@ -15,8 +15,7 @@ module RBase
       record_size = 1+schema.columns.inject(0) { |size, column| size + column.size }
 
       data = ''
-      data << [0xf5].pack('C') # version
-      #data << [0x3].pack('C') # version
+      data << [0x03].pack('C') # version
       data << [date.year % 100, date.month, date.day].pack('CCC') # last modification date
       data << [0].pack('L') # number of records
       # data << [32+schema.columns.size*32+263+1].pack('v') # data size
