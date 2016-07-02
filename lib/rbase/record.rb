@@ -1,6 +1,6 @@
 module RBase
 
-  class StandardError < Exception; end
+  class StandardError < RuntimeError; end
 
   class UnknownColumnError < StandardError
     attr_reader :name
@@ -42,7 +42,7 @@ module RBase
       @table = table
       @values_cached = {}
       @values_changed = {}
-
+      @data = nil
       attributes.each { |k, v| @values_changed[k.to_s.upcase] = v }
     end
 
@@ -106,9 +106,10 @@ module RBase
         @values_changed.each do |k, v|
           column = @table.column(k)
           raise UnknownColumnError.new(k) unless column
+
           begin
             @data[column.offset, column.size] = column.pack(v)
-          rescue Object => e
+          rescue StandardError => _e
             raise InvalidValueError.new(column, v)
           end
           @values_cached[k] = v
@@ -123,9 +124,10 @@ module RBase
     def get_value(name)
       name = name.to_s.upcase.to_sym
       return @values_changed[name] if @values_changed.has_key?(name)
-      return nil if new_record?
+      return if new_record?
       column = @table.column(name)
       raise UnknownColumnError.new(name) unless column
+
       @values_cached[name] ||= column.unpack(@data[column.offset, column.size])
     end
 
@@ -133,9 +135,9 @@ module RBase
     def set_value(name, value)
       name = name.to_s.upcase.to_sym
       raise UnknownColumnError.new(name) unless @table.column(name)
+
       @values_changed[name] = value
     end
   end
 
 end
-

@@ -60,37 +60,33 @@ module RBase
       column_type 'C'
 
       def initialize(name, options = {})
-        if options[:size] && options[:decimal]
-          size = options[:decimal]*256 + options[:size]
-        else
-          size = options[:size] || 254
-        end
+        size = if options[:size] && options[:decimal]
+                 options[:decimal] * 256 + options[:size]
+               else
+                 options[:size] || 254
+               end
 
-        super name, options.merge(:size => size)
+        super(name, options.merge(size: size))
 
-        if options[:encoding]
+        @encoding = options[:encoding]
+        if @encoding
           @unpack_converter = Encoder.new(options[:encoding], 'utf-8')
           @pack_converter = Encoder.new('utf-8', options[:encoding])
         end
       end
 
       def pack(value)
-	value = value.to_s
-        value = @pack_converter.en(value) if @pack_converter
-        [value].pack("A#{size}")
+        @encoding ? @pack_converter.en(value) : [value.to_s].pack("A#{size}")
       end
 
-      def unpack(data)
-        value = data.rstrip
-        value = @unpack_converter.en(value) if @unpack_converter
-        value
+      def unpack(value)
+        @encoding ? @unpack_converter.en(value.rstrip) : value.rstrip
       end
 
       def inspect
         "#{name}(string #{size})"
       end
     end
-
 
     class NumberColumn < Column
       column_type 'N'
@@ -99,24 +95,26 @@ module RBase
         size = options[:size] || 18
         size = 18 if size > 18
 
-        super name, options.merge(:size => size)
+        super(name, options.merge(size: size))
       end
 
       def pack(value)
         if value
           if float?
-            [format("%#{size-decimal-1}.#{decimal}f", value)].pack("A#{size}")
+            [format("%#{size - decimal - 1}.#{decimal}f", value)]
+              .pack("A#{size}")
           else
             [format("%#{size}d", value)].pack("A#{size}")
           end
         else
-          " "*size
+          " " * size
         end
       end
 
       def unpack(data)
         return nil if data.strip == ''
-        data.rstrip.to_i
+        data = data.strip
+        float? ? data.to_f : data.to_i
       end
 
       def inspect
@@ -132,12 +130,11 @@ module RBase
       end
     end
 
-
     class LogicalColumn < Column
       column_type 'L'
 
       def initialize(name, options = {})
-        super name, options.merge(:size => 1)
+        super name, options.merge(size: 1)
       end
 
       def pack(value)
@@ -164,21 +161,20 @@ module RBase
       end
     end
 
-
     class DateColumn < Column
       column_type 'D'
 
       def initialize(name, options = {})
-        super name, options.merge(:size => 8)
+        super(name, options.merge(size: 8))
       end
 
       def pack(value)
-        value ? value.strftime('%Y%m%d'): ' '*8
+        value ? value.strftime('%Y%m%d') : ' ' * 8
       end
 
       def unpack(data)
         return nil if data.rstrip == ''
-        Date.new(*data.unpack("a4a2a2").map { |s| s.to_i})
+        Date.new(*data.unpack("a4a2a2").map(&:to_i))
       end
 
       def inspect
@@ -186,12 +182,11 @@ module RBase
       end
     end
 
-
     class MemoColumn < Column
       column_type 'M'
 
       def initialize(name, options = {})
-        super name, options.merge(:size => 10)
+        super(name, options.merge(size: 10))
       end
 
       def pack(value)
@@ -208,12 +203,11 @@ module RBase
       end
     end
 
-
     class FloatColumn < Column
       column_type 'F'
 
       def initialize(name, options = {})
-        super name, options.merge(:size => 20)
+        super(name, options.merge(size: 20))
       end
 
       def decimal
@@ -221,7 +215,8 @@ module RBase
       end
 
       def pack(value)
-        [format("%-#{size-decimal-1}.#{decimal}f", value || 0.0)].pack("A#{size}")
+        [format("%-#{size - decimal - 1}.#{decimal}f", value || 0.0)]
+          .pack("A#{size}")
       end
 
       def unpack(data)
@@ -232,6 +227,6 @@ module RBase
         "#{name}(float)"
       end
     end
-
   end
+
 end

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class TestTable < Minitest::Test
+class TestCreateTable < Minitest::Test
   def setup
     @schema = RBase::Schema.new
     @schema.column(:name, :string, size: 20)
