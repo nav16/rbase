@@ -10,5 +10,7 @@ Gem::Specification.new do |s|
   s.rubyforge_project = 'rbase'
   s.has_rdoc = true
 
-  s.required_ruby_version = '>= 1.8.2'
+  s.required_ruby_version = '>= 2.0.0'
+  s.add_development_dependency 'pry'
+  s.add_development_dependency 'rubocop'
 end
