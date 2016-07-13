@@ -26,6 +26,8 @@ module RBase
         self.class.type
       end
 
+      # Column name, Column offset from the beginning of the record,
+      # Column size in characters and Number of decimal places
       attr_reader :name, :offset, :size, :decimal
 
       def initialize(name, options = {})
@@ -76,11 +78,13 @@ module RBase
       end
 
       def pack(value)
-        @encoding ? @pack_converter.en(value) : [value.to_s].pack("A#{size}")
+        value = value.to_s
+        @encoding ? @pack_converter.en(value) : [value].pack("A#{size}")
       end
 
       def unpack(value)
-        @encoding ? @unpack_converter.en(value.rstrip) : value.rstrip
+        value = value.to_s.rstrip
+        @encoding ? @unpack_converter.en(value) : value
       end
 
       def inspect
