@@ -1,8 +1,6 @@
 require 'rake'
 require 'rubygems'
 
-task :default => ['gem']
-
 desc 'Create a gem'
 task :gem do
   spec = Gem::Specification.new do |s|
@@ -22,3 +20,12 @@ task :gem do
 
   Gem::Builder.new(spec).build
 end
+
+require 'rake/testtask'
+Rake::TestTask.new do |t|
+  t.libs << 'test/' << 'lib/'
+  t.test_files = FileList['test/**/test_*.rb']
+  t.verbose = true
+end
+
+task default: :test

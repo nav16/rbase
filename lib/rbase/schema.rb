@@ -1,7 +1,6 @@
 require 'rbase/columns'
 
 module RBase
-
   class Schema
     # Returns list of all columns defined.
     attr_reader :columns
@@ -29,8 +28,8 @@ module RBase
     #   (text representation), so you should specify it's size in characters. Maximum column size is 18 (default).
     #   If :decimal option not equal to 0, number contains <:decimal> fraction positions.
     #   You should adjust :size keeping :decimal positions + 1 (for decimal point) in mind.
-    # * :memo - memo column. Memo is a text field that can be more than 254 chars long. Memo data is stored in separate file.
-    #   This column type is not yet supported.
+    # * :memo - memo column. Memo is a text field that can be more than 254 chars long.
+    #   Memo data is stored in separate file. This column type is not yet supported.
     #
     #
     def column(name, type, options = {})
@@ -44,9 +43,9 @@ module RBase
       when :boolean then type = 'L'
       when :date then type = 'D'
       end
-      
+
       @columns << Columns::Column.column_for(type).new(name, options)
     end
-  end
 
+  end
 end

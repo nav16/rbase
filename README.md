@@ -1,4 +1,7 @@
 rbase
 =====
 
-rbase gem (working with dbf files) for ruby 1.9.3 (iconv removed, some fixes)
+[![Build Status](https://travis-ci.org/cybrilla/rbase.svg?branch=master)](https://travis-ci.org/cybrilla/rbase)
+[![Coverage Status](https://coveralls.io/repos/github/cybrilla/rbase/badge.svg?branch=master)](https://coveralls.io/github/cybrilla/rbase?branch=master)
+
+Create, read and edit dbf files.
