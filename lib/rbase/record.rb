@@ -1,5 +1,4 @@
 module RBase
-
   class StandardError < RuntimeError; end
 
   class UnknownColumnError < StandardError
@@ -81,8 +80,8 @@ module RBase
     # Clone record.
     def clone
       c = self.class.new(@table, @values_changed)
-      c.instance_variable_set("@values_cached", @values_cached)
-      c.instance_variable_set("@data", @data)
+      c.instance_variable_set('@values_cached', @values_cached)
+      c.instance_variable_set('@data', @data)
       c
     end
 
@@ -123,7 +122,7 @@ module RBase
     # Returns value of specified column
     def get_value(name)
       name = name.to_s.upcase.to_sym
-      return @values_changed[name] if @values_changed.has_key?(name)
+      return @values_changed[name] if @values_changed.key?(name)
       return if new_record?
       column = @table.column(name)
       raise UnknownColumnError.new(name) unless column
@@ -139,5 +138,4 @@ module RBase
       @values_changed[name] = value
     end
   end
-
 end

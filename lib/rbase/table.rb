@@ -169,7 +169,7 @@ module RBase
 
     def open(name, options = {})
       @name = File.basename(name, '.dbf')
-      @file = File.open(name, "r+b")
+      @file = File.open(name, 'r+b')
       header = @file.read(32)
 
       year, month, day = *header.unpack('@1ccc')
@@ -213,7 +213,7 @@ module RBase
         record.instance_variable_set(:@index, count)
         self.count = count + 1
       else
-        throw "Index out of bound" if record.index >= count
+        throw 'Index out of bound' if record.index >= count
         @file.pos = @record_offset + @record_size * record.index
         @file.write record.serialize
       end
@@ -230,5 +230,4 @@ module RBase
       @file.write([count].pack('V'))
     end
   end
-
 end

@@ -41,12 +41,12 @@ module RBase
 
       # Packs column value for storing it in XBase file.
       def pack(_value)
-        throw "Not implemented"
+        throw 'Not implemented'
       end
 
       # Unpacks stored in XBase column data into appropriate Ruby form.
       def unpack(_value)
-        throw "Not implemented"
+        throw 'Not implemented'
       end
 
       def inspect
@@ -111,7 +111,7 @@ module RBase
             [format("%#{size}d", value)].pack("A#{size}")
           end
         else
-          " " * size
+          ' ' * size
         end
       end
 
@@ -130,7 +130,7 @@ module RBase
       end
 
       def float?
-        decimal && decimal != 0
+        decimal && decimal.nonzero?
       end
     end
 
@@ -155,8 +155,6 @@ module RBase
           true
         when 'N', 'F'
           false
-        else
-          nil
         end
       end
 
@@ -178,7 +176,7 @@ module RBase
 
       def unpack(data)
         return nil if data.rstrip == ''
-        Date.new(*data.unpack("a4a2a2").map(&:to_i))
+        Date.new(*data.unpack('a4a2a2').map(&:to_i))
       end
 
       def inspect
@@ -195,7 +193,7 @@ module RBase
 
       def pack(value)
         packed_value = table.memo.write(value)
-        [format("%-10d", packed_value)].pack('A10')
+        [format('%-10d', packed_value)].pack('A10')
       end
 
       def unpack(data)
@@ -215,7 +213,7 @@ module RBase
       end
 
       def decimal
-        (@decimal && @decimal <= 15) ? @decimal : 2
+        @decimal && @decimal <= 15 ? @decimal : 2
       end
 
       def pack(value)
@@ -232,5 +230,4 @@ module RBase
       end
     end
   end
-
 end

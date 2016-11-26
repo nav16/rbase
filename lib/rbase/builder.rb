@@ -21,11 +21,8 @@ module RBase
   #
   def self.create_table(name, options = {})
     options[:language] ||= LANGUAGE_RUSSIAN_WINDOWS
-    
     schema = Schema.new
     yield schema if block_given?
-    
     Table.create name, schema, options
   end
-
 end

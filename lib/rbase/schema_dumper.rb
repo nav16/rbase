@@ -1,5 +1,4 @@
 module RBase
-
   class SchemaDumper
     # Produce ruby schema for a given table.
     #
@@ -17,13 +16,10 @@ module RBase
     def self.dump(table)
       output = ''
       output << "RBase.create_table :#{table.name} do |t|\n"
-      
       table.columns.each do |column|
         output << "  t.column '#{column.name}', '#{column.type}', :size => #{column.size}#{ (column.decimal && column.decimal > 0) ? ", :decimal => #{column.decimal}" : ''}\n"
       end
-      
       output << "end\n"
     end
   end
-  
 end

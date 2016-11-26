@@ -46,6 +46,5 @@ module RBase
 
       @columns << Columns::Column.column_for(type).new(name, options)
     end
-
   end
 end
